@@ -22,7 +22,7 @@ async function app() {
     console.log(
       `${stockName(
         stockFolder
-      )}, ${price} ${screen}, ${management}, ${moat}, ${total}, ${
+      )}, ${price}, ${screen}, ${management}, ${moat}, ${total}, ${
         buys.ourBuyPrice
       }, ${buys.warrenBuyPrice}`
     );
