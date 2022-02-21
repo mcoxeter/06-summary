@@ -7,10 +7,11 @@ async function app() {
   const stockFolders = await getStockFolders();
 
   console.log(
-    'Symbol, 02-screen, 03-management, 04-moat, total-score, 05-mos-ourBuy, 05-mos-warren-buy'
+    'Symbol, currentPrice, 02-screen, 03-management, 04-moat, total-score, 05-mos-ourBuy, 05-mos-warren-buy'
   );
 
   for (const stockFolder of stockFolders) {
+    const price = currentPrice(stockFolder);
     const buys = mosBuys(stockFolder);
     const screen = screenRating(stockFolder);
     const management = managementScore(stockFolder);
@@ -21,9 +22,9 @@ async function app() {
     console.log(
       `${stockName(
         stockFolder
-      )}, ${screen}, ${management}, ${moat}, ${total}, ${buys.ourBuyPrice}, ${
-        buys.warrenBuyPrice
-      }`
+      )}, ${price} ${screen}, ${management}, ${moat}, ${total}, ${
+        buys.ourBuyPrice
+      }, ${buys.warrenBuyPrice}`
     );
   }
 }
@@ -31,6 +32,17 @@ async function app() {
 function stockName(stockFolder: string): string {
   const parts = stockFolder.split('\\');
   return parts[parts.length - 1];
+}
+
+function currentPrice(stockFolder: string): number {
+  const lastDataFile = fs
+    .readdirSync(`${stockFolder}/01-data`)
+    .filter((file) => file.endsWith('.json'))
+    .sort((a, b) => b.localeCompare(a))
+    .find(() => true);
+
+  const screen = require(`${stockFolder}/01-data/${lastDataFile}`);
+  return screen.Price ?? 0;
 }
 
 function screenRating(stockFolder: string): number {
